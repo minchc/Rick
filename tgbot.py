@@ -12,8 +12,11 @@ def recycler_message(message):
     array = message.text.lower().split()
     if("рик" in array):
         if(array[1] == "погода"):
-            city = array[2]
-            get_weather(message,city)
+            if(len(array) < 3):
+                get_weather(message,"Almaty")
+            else:
+                city = array[2]
+                get_weather(message,city)
 def get_weather(message,city):
     translator = Translator()
     translated_city = (translator.translate(city, src="ru", dest="en")).text
@@ -41,14 +44,14 @@ def get_weather(message,city):
             )
             bot.reply_to(message, response_message)
 
-            image = 'sunny.png' if temp > 5.0 else 'sun.png'
-            try:
-                with open('./' + image, 'rb') as file:
-                    bot.send_photo(message.chat.id, file)
-            except FileNotFoundError:
-                bot.reply_to(message, "Изображение не найдено.")
+            # image = 'sunny.png' if temp > 5.0 else 'sun.png'
+            # try:
+            #     with open('./' + image, 'rb') as file:
+            #         bot.send_photo(message.chat.id, file)
+            # except FileNotFoundError:
+            #     bot.reply_to(message, "Изображение не найдено.")
         else:
-            bot.reply_to(message, f'Город указан неверно.')
+            bot.reply_to(message, f'Город не найден.')
     except requests.exceptions.ReadTimeout:
         bot.reply_to(message, "Сервер не отвечает. Попробуйте позже.")
     except Exception as e:
